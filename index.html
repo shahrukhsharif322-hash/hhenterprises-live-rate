@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>H&H Enterprises Live Rate By Shahrukh</title>
+  <style>
+    :root{--bg:#060606;--card:#0f0f10;--muted:#a8a8a8;--accent:#d4af37;--glass:rgba(255,255,255,0.03)}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial}
+    body{background:linear-gradient(180deg,#020305 0%,#06121a 100%);color:#f3ecd9}
+    .container{max-width:1100px;margin:28px auto;padding:20px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+    h1{margin:0 0 6px;font-size:20px;color:var(--accent);letter-spacing:0.6px}
+    .subtitle{color:var(--muted);font-size:13px;margin-bottom:12px}
+    .grid{display:grid;gap:14px}
+    .cols-3{grid-template-columns:1fr 360px 260px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input[type=number], input[type=text], select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:var(--glass);color:inherit}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.03)}
+    th{color:var(--muted);font-size:13px}
+    .btn{background:linear-gradient(90deg,var(--accent),#f0c46b);border:none;padding:10px 14px;border-radius:10px;color:#0b0b0b;font-weight:700;cursor:pointer}
+    .small{font-size:13px}
+    .price{font-size:20px;font-weight:700;color:#fff}
+    .meta{font-size:12px;color:var(--muted)}
+    .right{text-align:right}
+    .kpi{display:flex;gap:12px}
+    .kpi .item{background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;min-width:140px}
+    .fade{color:var(--muted)}
+    .footer{font-size:12px;color:var(--muted);margin-top:12px}
+    .inline{display:flex;gap:8px;align-items:center}
+    @media (max-width:980px){.cols-3{grid-template-columns:1fr} .container{padding:16px}}
+    .logo {font-weight:800; font-size:18px; color:var(--accent); display:flex; align-items:center; gap:12px;}
+    .byline {font-size:12px;color:var(--muted);margin-top:4px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="display:flex;gap:12px;align-items:center">
+          <img src="logo.svg" alt="H&H Enterprises" style="height:64px"/>
+          <div>
+            <div class="logo">H&amp;H Enterprises – Live Metal Rate Dashboard</div>
+            <div class="byline">By Shahrukh</div>
+          </div>
+        </div>
+        <div class="meta">Premium • Gold &amp; Black</div>
+      </div>
+
+      <div style="height:14px"></div>
+      <h1>H&amp;H Enterprises Live Rate By Shahrukh</h1>
+      <div class="subtitle">Live market prices (USD / ton) • Auto-updates via the included Node proxy.</div>
+
+      <div style="height:10px"></div>
+
+      <div class="grid cols-3">
+        <!-- LEFT: materials table -->
+        <div>
+          <div class="card" style="padding:12px;margin-bottom:12px">
+            <div class="inline" style="justify-content:space-between"><div class="small fade">Materials</div>
+            <div class="inline"><div class="meta">Auto-refresh:</div><div id="lastUpdated" class="meta" style="margin-left:8px">—</div></div></div>
+
+            <div style="height:8px"></div>
+            <table id="materialsTable">
+              <thead>
+                <tr><th>Metal</th><th class="right">LME (USD/ton)</th><th class="right">% in scrap</th><th class="right">Contribution</th></tr>
+              </thead>
+              <tbody id="materialsBody"></tbody>
+            </table>
+
+            <div style="height:8px"></div>
+            <div class="inline" style="justify-content:space-between">
+              <div class="meta">Purchase % of LME</div>
+              <div style="width:160px"><input id="purchasePct" type="number" value="80"/></div>
+            </div>
+
+            <div style="height:8px"></div>
+            <div class="inline" style="justify-content:flex-end"><div class="meta">Weight (tons)</div><div style="width:120px"><input id="weightTons" type="number" value="1" step="0.1"/></div></div>
+
+            <div style="height:12px"></div>
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+              <button id="refreshBtn" class="btn">Refresh Prices</button>
+              <button id="copyBtn" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);font-weight:600">Copy Result</button>
+            </div>
+          </div>
+
+          <div class="card" style="padding:12px;margin-top:8px">
+            <div class="kpi">
+              <div class="item"><div class="fade small">Scrap Rate (USD/ton)</div><div id="scrapRate" class="price">$ —</div></div>
+              <div class="item"><div class="fade small">Total Cost</div><div id="totalCost" class="price">$ —</div></div>
+              <div class="item"><div class="fade small">Cost / kg</div><div id="costKg" class="price">$ —</div></div>
+            </div>
+            <div class="footer">Tip: edit the % columns to match your scrap composition. Values update instantly.</div>
+          </div>
+        </div>
+
+        <!-- MIDDLE: live prices card -->
+        <div>
+          <div class="card" style="padding:12px">
+            <div class="small fade">Live Prices (USD/ton)</div>
+            <div style="height:10px"></div>
+            <div id="livePrices" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+
+            <div style="height:12px"></div>
+            <div class="meta">Data source: <span id="sourceLabel">Node proxy (Yahoo Finance)</span></div>
+            <div style="height:8px"></div>
+            <div class="muted small">If you prefer direct Metals-API integration (LME), you can paste an API key in server settings later.</div>
+          </div>
+
+          <div class="card" style="padding:12px;margin-top:12px">
+            <div class="small fade">Quick presets</div>
+            <div style="height:8px"></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" onclick="applyPreset('cable')">Cable (20% Cu, 15% Al)</button>
+              <button class="btn" onclick="applyPreset('motor')">Motor (25% Cu, 5% Al)</button>
+              <button class="btn" onclick="applyPreset('radiator')">Radiator (35% Cu, 10% Al)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: breakdown & settings -->
+        <div>
+          <div class="card" style="padding:12px">
+            <div class="small fade">Breakdown</div>
+            <div style="height:10px"></div>
+            <div id="breakdown"></div>
+            <div style="height:12px"></div>
+            <div class="small fade">Settings</div>
+            <div style="height:8px"></div>
+            <div class="meta">Server URL</div>
+            <input id="serverUrl" type="text" value="http://localhost:3000/api/prices"/>
+            <div style="height:8px"></div>
+            <div class="meta">Auto-refresh on open</div>
+            <div style="height:6px"></div>
+            <label class="inline"><input id="autoRefresh" type="checkbox" checked/> <span class="fade" style="margin-left:8px">Enabled</span></label>
+          </div>
+
+          <div class="card" style="padding:12px;margin-top:12px">
+            <div class="small fade">Notes</div>
+            <div style="height:8px"></div>
+            <div class="muted small">This UI uses a tiny Node proxy to avoid CORS and return consistent USD/ton values. Run the provided server and open this page from the same machine (or host both).</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+const METALS = [
+  { key: 'copper', name: 'Copper' },
+  { key: 'aluminium', name: 'Aluminium' },
+  { key: 'zinc', name: 'Zinc' },
+  { key: 'lead', name: 'Lead' },
+  { key: 'nickel', name: 'Nickel' },
+  { key: 'tin', name: 'Tin' }
+];
+
+let state = {
+  prices: {},
+  composition: { copper:20, aluminium:15, zinc:0, lead:0, nickel:0, tin:0 },
+  purchasePct: 80,
+  weight: 1,
+  lastUpdated: null,
+  profitPct: 0
+};
+
+function renderMaterials(){
+  const tbody = document.getElementById('materialsBody');
+  tbody.innerHTML = '';
+  METALS.forEach(m=>{
+    const tr = document.createElement('tr');
+    const price = state.prices[m.key] || 0;
+    const pct = state.composition[m.key] || 0;
+    const purchaseRate = (price * (state.purchasePct/100));
+    const contribution = (pct/100) * purchaseRate;
+    tr.innerHTML = `
+      <td>${m.name}</td>
+      <td class="right">$ ${Number(price).toLocaleString(undefined,{maximumFractionDigits:2})}</td>
+      <td class="right"><input type="number" value="${pct}" style="width:80px;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.03)" onchange="onPctChange('${m.key}',this.value)"/></td>
+      <td class="right">$ ${Number(contribution).toLocaleString(undefined,{maximumFractionDigits:2})}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  computeTotals();
+}
+
+function renderPrices(){
+  const container = document.getElementById('livePrices');
+  container.innerHTML = '';
+  METALS.forEach(m=>{
+    const div = document.createElement('div');
+    div.style.padding='10px';div.style.borderRadius='8px';div.style.background='rgba(255,255,255,0.02)';
+    const price = state.prices[m.key] || 0;
+    div.innerHTML = `<div class="small fade">${m.name}</div><div class="price">$ ${Number(price).toLocaleString(undefined,{maximumFractionDigits:2})}</div>`;
+    container.appendChild(div);
+  });
+}
+
+function renderBreakdown(){
+  const el = document.getElementById('breakdown');
+  el.innerHTML = '';
+  METALS.forEach(m=>{
+    const price = state.prices[m.key] || 0;
+    const pct = state.composition[m.key] || 0;
+    const adj = price * (state.purchasePct/100);
+    const contr = (pct/100)*adj;
+    const row = document.createElement('div');
+    row.style.display='flex';row.style.justifyContent='space-between';row.style.marginBottom='6px';
+    row.innerHTML = `<div class="muted small">${m.name} (${pct}%)</div><div class="muted small">$ ${Number(contr).toLocaleString(undefined,{maximumFractionDigits:2})}</div>`;
+    el.appendChild(row);
+  });
+}
+
+function computeTotals(){
+  let scrapRate = 0;
+  METALS.forEach(m=>{
+    const price = state.prices[m.key] || 0;
+    const pct = state.composition[m.key] || 0;
+    scrapRate += (pct/100) * price * (state.purchasePct/100);
+  });
+  const totalCost = scrapRate * (state.weight || 0);
+  const costKg = (state.weight>0) ? totalCost / (state.weight*1000) : 0;
+  const profit = state.profitPct ? totalCost * (state.profitPct/100) : 0;
+  const finalPrice = totalCost + profit;
+  document.getElementById('scrapRate').innerText = `$ ${Number(scrapRate).toLocaleString(undefined,{maximumFractionDigits:2})}`;
+  document.getElementById('totalCost').innerText = `$ ${Number(totalCost).toLocaleString(undefined,{maximumFractionDigits:2})}`;
+  document.getElementById('costKg').innerText = `$ ${Number(costKg).toLocaleString(undefined,{maximumFractionDigits:4})}`;
+  // profit elements
+  document.getElementById('profitValue').innerText = `$ ${Number(profit).toLocaleString(undefined,{maximumFractionDigits:2})}`;
+  document.getElementById('finalPrice').innerText = `$ ${Number(finalPrice).toLocaleString(undefined,{maximumFractionDigits:2})}`;
+  renderBreakdown();
+}
+
+function onPctChange(key,val){ state.composition[key]=Number(val); renderMaterials(); }
+
+function applyPreset(name){
+  if(name==='cable'){ state.composition={copper:20,aluminium:15,zinc:0,lead:0,nickel:0,tin:0}; }
+  if(name==='motor'){ state.composition={copper:25,aluminium:5,zinc:0,lead:0,nickel:0,tin:0}; }
+  if(name==='radiator'){ state.composition={copper:35,aluminium:10,zinc:0,lead:0,nickel:0,tin:0}; }
+  renderMaterials();
+}
+
+async function fetchPrices(){
+  const url = document.getElementById('serverUrl').value || '/api/prices';
+  try{
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Price fetch failed: '+res.status);
+    const data = await res.json();
+    state.prices = data.prices || data;
+    state.lastUpdated = data.updated || new Date().toISOString();
+    document.getElementById('lastUpdated').innerText = new Date(state.lastUpdated).toLocaleString();
+    renderPrices(); renderMaterials();
+  }catch(err){
+    alert('Failed to fetch prices: '+err.message);
+    console.error(err);
+  }
+}
+
+// UI wiring
+document.getElementById('refreshBtn').addEventListener('click',fetchPrices);
+document.getElementById('copyBtn').addEventListener('click',()=>{
+  const out={scrapRate:document.getElementById('scrapRate').innerText,totalCost:document.getElementById('totalCost').innerText,costKg:document.getElementById('costKg').innerText,composition:state.composition,profitPct:state.profitPct};
+  navigator.clipboard && navigator.clipboard.writeText(JSON.stringify(out,null,2));
+  alert('Copied result to clipboard');
+});
+
+document.getElementById('purchasePct').addEventListener('input',(e)=>{ state.purchasePct=Number(e.target.value||0); renderMaterials(); });
+document.getElementById('weightTons').addEventListener('input',(e)=>{ state.weight=Number(e.target.value||0); computeTotals(); });
+
+document.getElementById('autoRefresh').addEventListener('change',(e)=>{ /* no-op - used for future */ });
+
+// Auto fetch on open
+window.addEventListener('load',()=>{
+  renderMaterials();
+  const auto = document.getElementById('autoRefresh').checked;
+  if(auto) fetchPrices();
+});
+</script>
+</body>
+</html>

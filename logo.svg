@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="120" viewBox="0 0 400 120">
+  <rect width="400" height="120" fill="#060606"/>
+  <g>
+    <rect x="12" y="12" width="96" height="96" rx="16" fill="#0f0f10" stroke="#d4af37" stroke-width="3"/>
+    <text x="60" y="70" font-family="Inter, Arial, sans-serif" font-size="36" text-anchor="middle" fill="#d4af37" font-weight="700">H&amp;H</text>
+  </g>
+  <text x="132" y="58" font-family="Inter, Arial, sans-serif" font-size="20" fill="#d4af37" font-weight="700">Enterprises</text>
+  <text x="132" y="86" font-family="Inter, Arial, sans-serif" font-size="12" fill="#a8a8a8">Live Metal Rates - By Shahrukh</text>
+</svg>
